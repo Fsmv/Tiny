@@ -1,0 +1,46 @@
+<project name="Tiny2D" basedir="." default="main" xmlns:ivy="antlib:org.apache.ivy.ant">
+
+    <property name="src.dir" value="src"/>
+
+    <property name="build.dir" value="build"/>
+    <property name="classes.dir" value="${build.dir}/classes"/>
+    <property name="jar.dir" value="${build.dir}"/>
+    <property name="lib.dir" value="lib"/>
+
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+    </target>
+
+    <target name="compile" depends="resolve">
+        <mkdir dir="${classes.dir}"/>
+        <javac srcdir="${src.dir}" destdir="${classes.dir}" includeAntRuntime="false">
+            <classpath>
+                <fileset dir="lib">
+                    <include name="**/*.jar" />
+                </fileset>
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="jar" depends="compile">
+        <mkdir dir="${jar.dir}"/>
+        <jar destfile="${jar.dir}/${ant.project.name}.jar">
+            <zipgroupfileset dir="${lib.dir}">
+                <include name="*.jar"/>
+                <exclude name="*sources*"/>
+                <exclude name="*javadoc*"/>
+            </zipgroupfileset>
+
+        	<fileset dir="${classes.dir}" excludes="**/Main.class,**/screens/" />
+        </jar>
+    </target>
+
+    <target name="clean-buildall" depends="clean,jar"/>
+    <target name="buildall" depends="jar"/>
+
+    <target name="resolve">
+        <ivy:retrieve pattern="${lib.dir}/[artifact]-[type].[ext]" />
+    </target>
+
+    <target name="main" depends="clean,jar"/>
+</project>

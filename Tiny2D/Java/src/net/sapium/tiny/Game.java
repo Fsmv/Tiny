@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Graphics2D;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.awt.image.BufferStrategy;
 import java.io.IOException;
 
@@ -33,6 +35,7 @@ public class Game extends Canvas implements Runnable {
     private boolean limitFPS = true;
     private boolean limitTPS = true;
 
+    private String icon = "/icon.png";
     private String logfile = "output.log";
     
     private Logger logger = Logger.getLogger(Game.class);
@@ -128,6 +131,8 @@ public class Game extends Canvas implements Runnable {
      * 
      * must be set before init() is called
      * 
+     * Default: "Game"
+     * 
      * @param title the window title
      */
     public void setTitle(String title) {
@@ -135,9 +140,26 @@ public class Game extends Canvas implements Runnable {
     }
     
     /**
+     * Set the location of the window icon
+     * 
+     * must be called before createWindow()
+     * 
+     * if null don't set an icon
+     * 
+     * Default: /icon.png
+     * 
+     * @param path location of the icon image
+     */
+    public void setIcon(String path) {
+        this.icon = path;
+    }
+    
+    /**
      * Sets the frames per second to limit rendering to
      * 
      * if <= 0 unlimited
+     * 
+     * Default: 60
      * 
      * @param fps the fps to set
      */
@@ -154,6 +176,8 @@ public class Game extends Canvas implements Runnable {
      * Sets the number of updates per second to limit to
      * 
      * if <= 0 unlimited
+     * 
+     * Default: 60
      * 
      * @param tps the tps to set
      */
@@ -178,6 +202,8 @@ public class Game extends Canvas implements Runnable {
 
     /**
      * Sets whether or not the engine should print the current fps
+     * 
+     * Default: true
      * 
      * @param printFPS if true print the fps and tps on stdout
      */
@@ -232,6 +258,27 @@ public class Game extends Canvas implements Runnable {
     public void createWindow() {
         Frame window = new Frame(this.title);
         
+        final Game game = this;
+        window.addWindowListener(new WindowListener() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                game.stop();
+                System.exit(0);
+            }
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {}
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });
+        
         initLog4J();
         
         InputHandler ih = new InputHandler();
@@ -242,10 +289,12 @@ public class Game extends Canvas implements Runnable {
         this.init();
         window.add(this);
         
-        try {
-            window.setIconImage(ImageIO.read(Main.class.getResourceAsStream("/icon.png")));
-        } catch (IOException e) {
-            logger.error("Could not load icon image", e);
+        if(icon != null) {
+            try {
+                window.setIconImage(ImageIO.read(Main.class.getResourceAsStream(icon)));
+            } catch (IOException e) {
+                logger.error("Could not load icon image", e);
+            }
         }
 
         window.setLocationRelativeTo(null);

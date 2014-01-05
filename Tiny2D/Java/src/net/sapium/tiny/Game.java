@@ -14,23 +14,37 @@ import org.apache.log4j.Logger;
 public class Game extends Canvas implements Runnable {
     private static final long serialVersionUID = 1L;
 
-    public static final String NAME = "Game";
-    public static final int WIDTH = 720;
-    public static final int HEIGHT = 480;
-    public static final int FPS = 60;
-    public static final Color background = Color.white;
-    private static final boolean printFPS = true;
+    private String title = "Game";
+    private int width = 720;
+    private int height = 480;
+    private int fps = 60;
+    private int tps = 60;
+    private Color background = Color.white;
+    private boolean printFPS = true;
+    private boolean limitFPS = true;
+    private boolean limitTPS = true;
 
-    private static Logger logger = Logger.getLogger(Game.class);
-    private static Thread thread;
-    private static boolean running = false;
-    private static Screen currentScreen;
+    private Logger logger = Logger.getLogger(Game.class);
+    private Thread thread;
+    private boolean running = false;
+    private Screen currentScreen;
     
     public Game() {
-        this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+        this.setPreferredSize(new Dimension(width, height));
+    }
+    
+    public Game(String title, int width, int height) {
+        this.title = title;
+        this.width = width;
+        this.height = height;
+        
+        this.setPreferredSize(new Dimension(width, height));
     }
 
-    public void render() {
+    /**
+     * Draws to the screen
+     */
+    private void render() {
         BufferStrategy bs = this.getBufferStrategy();
         if(bs == null){
             this.createBufferStrategy(2);
@@ -39,7 +53,7 @@ public class Game extends Canvas implements Runnable {
         
         Graphics2D g = (Graphics2D) bs.getDrawGraphics();
         
-        g.clearRect(0, 0, WIDTH, HEIGHT);
+        g.clearRect(0, 0, width, height);
         
         currentScreen.draw(g);
         
@@ -47,16 +61,22 @@ public class Game extends Canvas implements Runnable {
         bs.show();
     }
 
-    public void tick() {
+    /**
+     * Processes game updates
+     */
+    private void tick() {
         currentScreen.tick();
     }
 
     @Override
     public void run() {
         double unprocessedTicks = 0.0;
-        double nsPerTick = 1000000000.0/FPS;
+        double nsPerTick = 1000000000.0/tps;
+        
+        double unrenderedFrames = 0.0;
+        double nsPerFrame = 1000000000.0/fps;
+
         long lastTime = System.nanoTime();
-        boolean needsRender = true;
         
         long lastFpsTime = System.currentTimeMillis();
         int frameCount = 0;
@@ -65,18 +85,18 @@ public class Game extends Canvas implements Runnable {
         while(running){
             long now = System.nanoTime();
             unprocessedTicks += (now - lastTime) / nsPerTick;
+            unrenderedFrames += (now - lastTime) / nsPerFrame;
             lastTime = now;
             
-            if(unprocessedTicks >= 1.0){
+            if(unprocessedTicks >= 1.0 || !limitTPS){
                 tick();
                 unprocessedTicks -= 1.0;
-                needsRender = true;
                 tickCount++;
             }
             
-            if(needsRender){
+            if(unrenderedFrames >= 1.0 || !limitFPS){
                 render();
-                needsRender = false;
+                unrenderedFrames -= 1.0;
                 frameCount++;
             }
             
@@ -90,6 +110,68 @@ public class Game extends Canvas implements Runnable {
     }
     
     /**
+     * Set the window title
+     * 
+     * must be set before init() is called
+     * 
+     * @param title the window title
+     */
+    public void setTitle(String title) {
+        this.title = title;
+    }
+    
+    /**
+     * Sets the frames per second to limit rendering to
+     * 
+     * if <= 0 unlimited
+     * 
+     * @param fps the fps to set
+     */
+    public void setFps(int fps) {
+        this.fps = fps;
+        
+        if(fps <= 0)
+            this.limitFPS = false;
+        else
+            this.limitFPS = true;
+    }
+    
+    /**
+     * Sets the number of updates per second to limit to
+     * 
+     * if <= 0 unlimited
+     * 
+     * @param tps the tps to set
+     */
+    public void setTPS(int tps) {
+       this.tps = tps;
+       
+       if(tps <= 0) 
+           this.limitTPS = false;
+       else
+           this.limitTPS = true;
+    }
+
+    /**
+     * Sets the background color to use when clearing the screen
+     * 
+     * @param background set the background color to draw
+     */
+    public void setBackgroundColor(Color background) {
+        this.background = background;
+        this.setBackground(background);
+    }
+
+    /**
+     * Sets whether or not the engine should print the current fps
+     * 
+     * @param printFPS if true print the fps and tps on stdout
+     */
+    public void setPrintFPS(boolean printFPS) {
+        this.printFPS = printFPS;
+    }
+
+    /**
      * Sets the screen to draw
      * 
      * @param s the screen to draw
@@ -97,7 +179,10 @@ public class Game extends Canvas implements Runnable {
     public void setCurrentScreen(Screen s){
         currentScreen = s;
     }
-
+    
+    /**
+     * Initializes the game and creates the window
+     */
     public void init() {
         logger.debug("init");
         this.setBackground(background);
@@ -105,12 +190,18 @@ public class Game extends Canvas implements Runnable {
         thread = new Thread(this);
     }
 
+    /**
+     * Starts running the game
+     */
     public void start() {
         logger.debug("start");
         running = true;
         thread.start();
     }
 
+    /**
+     * Stops the game
+     */
     public void stop() {
         logger.debug("stop");
         running = false;

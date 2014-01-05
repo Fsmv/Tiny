@@ -14,7 +14,6 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import net.sapium.tiny.graphics.Screen;
-import net.sapium.tiny.screens.PlayScreen;
 import net.sapium.tiny.utils.InputHandler;
 
 import org.apache.log4j.ConsoleAppender;
@@ -321,7 +320,6 @@ public class Game implements Runnable {
         
         logger.debug("init");
         canvas.setBackground(background);
-        this.setCurrentScreen(new PlayScreen());
         thread = new Thread(this);
     }
 

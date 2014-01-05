@@ -2,6 +2,8 @@ package net.sapium.tiny;
 
 import java.applet.Applet;
 
+import net.sapium.tiny.screens.PlayScreen;
+
 public class Main extends Applet {
     private static final long serialVersionUID = 1L;
 
@@ -9,6 +11,8 @@ public class Main extends Applet {
 
     public static void main(String[] args) {
         game = new Game();
+        game.setCurrentScreen(new PlayScreen());
+        
         game.createWindow();
         game.start();
     }
@@ -16,6 +20,7 @@ public class Main extends Applet {
     @Override
     public void init() {
         game = new Game();
+        game.setCurrentScreen(new PlayScreen());
         
         add(game.getDrawComponent());
         game.init();

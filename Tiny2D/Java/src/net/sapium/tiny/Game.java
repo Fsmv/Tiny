@@ -3,12 +3,16 @@ package net.sapium.tiny;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.Graphics2D;
 import java.awt.image.BufferStrategy;
 import java.io.IOException;
 
+import javax.imageio.ImageIO;
+
 import net.sapium.tiny.graphics.Screen;
 import net.sapium.tiny.screens.PlayScreen;
+import net.sapium.tiny.utils.InputHandler;
 
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.FileAppender;
@@ -220,7 +224,35 @@ public class Game extends Canvas implements Runnable {
         } catch (SecurityException e) {
             logger.debug("Could not create log file. Running in an applet.");
         }
-    } 
+    }
+    
+    /**
+     * Creates a window and initializes the game
+     */
+    public void createWindow() {
+        Frame window = new Frame(this.title);
+        
+        initLog4J();
+        
+        InputHandler ih = new InputHandler();
+        this.addKeyListener(ih);
+        this.addMouseListener(ih);
+        this.addMouseMotionListener(ih);
+        
+        this.init();
+        window.add(this);
+        
+        try {
+            window.setIconImage(ImageIO.read(Main.class.getResourceAsStream("/icon.png")));
+        } catch (IOException e) {
+            logger.error("Could not load icon image", e);
+        }
+
+        window.setLocationRelativeTo(null);
+        window.setResizable(false);
+        window.pack();
+        window.setVisible(true);
+    }
     
     /**
      * Initializes the game

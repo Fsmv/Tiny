@@ -17,7 +17,7 @@ public class Main extends Applet {
     public void init() {
         game = new Game();
         
-        this.add(game);
+        add(game.getDrawComponent());
         game.init();
         
         this.requestFocus();

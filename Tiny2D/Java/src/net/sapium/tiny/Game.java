@@ -2,6 +2,7 @@ package net.sapium.tiny;
 
 import java.awt.Canvas;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Graphics2D;
@@ -22,15 +23,13 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 
-public class Game extends Canvas implements Runnable {
-    private static final long serialVersionUID = 1L;
-
+public class Game implements Runnable {
     private String title = "Game";
     private int width = 720;
     private int height = 480;
     private int fps = 60;
     private int tps = 60;
-    private Color background = Color.white;
+    private Color background;
     private boolean printFPS = true;
     private boolean limitFPS = true;
     private boolean limitTPS = true;
@@ -38,13 +37,16 @@ public class Game extends Canvas implements Runnable {
     private String icon = "/icon.png";
     private String logfile = "output.log";
     
+    private Canvas canvas;
+    
     private Logger logger = Logger.getLogger(Game.class);
     private Thread thread;
     private boolean running = false;
     private Screen currentScreen;
     
     public Game() {
-        this.setPreferredSize(new Dimension(width, height));
+        canvas = new Canvas();
+        canvas.setPreferredSize(new Dimension(width, height));
     }
     
     public Game(String title, int width, int height) {
@@ -52,16 +54,17 @@ public class Game extends Canvas implements Runnable {
         this.width = width;
         this.height = height;
         
-        this.setPreferredSize(new Dimension(width, height));
+        canvas = new Canvas();
+        canvas.setPreferredSize(new Dimension(width, height));
     }
 
     /**
      * Draws to the screen
      */
     private void render() {
-        BufferStrategy bs = this.getBufferStrategy();
+        BufferStrategy bs = canvas.getBufferStrategy();
         if(bs == null){
-            this.createBufferStrategy(2);
+            canvas.createBufferStrategy(2);
             return;
         }
         
@@ -197,7 +200,7 @@ public class Game extends Canvas implements Runnable {
      */
     public void setBackgroundColor(Color background) {
         this.background = background;
-        this.setBackground(background);
+        canvas.setBackground(background);
     }
 
     /**
@@ -231,6 +234,10 @@ public class Game extends Canvas implements Runnable {
      */
     public void setLogfile(String logfile) {
         this.logfile = logfile;
+    }
+    
+    public Component getDrawComponent() {
+        return canvas;
     }
     
     /**
@@ -282,7 +289,7 @@ public class Game extends Canvas implements Runnable {
         initLog4J();
         
         this.init();
-        window.add(this);
+        window.add(canvas);
         
         if(icon != null) {
             try {
@@ -305,12 +312,12 @@ public class Game extends Canvas implements Runnable {
         initLog4J();
         
         InputHandler ih = new InputHandler();
-        this.addKeyListener(ih);
-        this.addMouseListener(ih);
-        this.addMouseMotionListener(ih);
+        canvas.addKeyListener(ih);
+        canvas.addMouseListener(ih);
+        canvas.addMouseMotionListener(ih);
         
         logger.debug("init");
-        this.setBackground(background);
+        canvas.setBackground(background);
         this.setCurrentScreen(new PlayScreen());
         thread = new Thread(this);
     }

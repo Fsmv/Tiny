@@ -281,11 +281,6 @@ public class Game extends Canvas implements Runnable {
         
         initLog4J();
         
-        InputHandler ih = new InputHandler();
-        this.addKeyListener(ih);
-        this.addMouseListener(ih);
-        this.addMouseMotionListener(ih);
-        
         this.init();
         window.add(this);
         
@@ -308,6 +303,11 @@ public class Game extends Canvas implements Runnable {
      */
     public void init() {
         initLog4J();
+        
+        InputHandler ih = new InputHandler();
+        this.addKeyListener(ih);
+        this.addMouseListener(ih);
+        this.addMouseMotionListener(ih);
         
         logger.debug("init");
         this.setBackground(background);

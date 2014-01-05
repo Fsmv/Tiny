@@ -1,4 +1,4 @@
-<project name="Game" basedir="." default="main" xmlns:ivy="antlib:org.apache.ivy.ant">
+<project name="Tiny2D" basedir="." default="main" xmlns:ivy="antlib:org.apache.ivy.ant">
 
     <property name="src.dir" value="src"/>
 
@@ -6,9 +6,6 @@
     <property name="classes.dir" value="${build.dir}/classes"/>
     <property name="jar.dir" value="${build.dir}"/>
     <property name="lib.dir" value="lib"/>
-    <property name="res.dir" value="res"/>
-
-    <property name="main-class" value="net.sapium.tiny.Main"/>
 
     <target name="clean">
         <delete dir="${build.dir}"/>
@@ -34,17 +31,8 @@
                 <exclude name="*javadoc*"/>
             </zipgroupfileset>
 
-        	<fileset dir="${classes.dir}" />
-            <fileset dir="${res.dir}" />
-
-            <manifest>
-                <attribute name="Main-Class" value="${main-class}"/>
-            </manifest>
+        	<fileset dir="${classes.dir}" excludes="**/Main.class,**/screens/" />
         </jar>
-    </target>
-
-    <target name="run" depends="jar">
-        <java jar="${jar.dir}/${ant.project.name}.jar" fork="true"/>
     </target>
 
     <target name="clean-buildall" depends="clean,jar"/>
@@ -54,5 +42,5 @@
         <ivy:retrieve pattern="${lib.dir}/[artifact]-[type].[ext]" />
     </target>
 
-    <target name="main" depends="clean,run"/>
+    <target name="main" depends="clean,jar"/>
 </project>

@@ -5,11 +5,16 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.image.BufferStrategy;
+import java.io.IOException;
 
 import net.sapium.tiny.graphics.Screen;
 import net.sapium.tiny.screens.PlayScreen;
 
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.FileAppender;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
 
 public class Game extends Canvas implements Runnable {
     private static final long serialVersionUID = 1L;
@@ -24,6 +29,8 @@ public class Game extends Canvas implements Runnable {
     private boolean limitFPS = true;
     private boolean limitTPS = true;
 
+    private String logfile = "output.log";
+    
     private Logger logger = Logger.getLogger(Game.class);
     private Thread thread;
     private boolean running = false;
@@ -68,6 +75,9 @@ public class Game extends Canvas implements Runnable {
         currentScreen.tick();
     }
 
+    /**
+     * Calls tick, then render at the specified rates
+     */
     @Override
     public void run() {
         double unprocessedTicks = 0.0;
@@ -181,9 +191,43 @@ public class Game extends Canvas implements Runnable {
     }
     
     /**
-     * Initializes the game and creates the window
+     * Set the file Log4J should append to
+     * 
+     * must be called before init
+     * 
+     * if null, only log to the console (unnecessary if you're running in an applet)
+     * 
+     * @param logfile filename to use
+     */
+    public void setLogfile(String logfile) {
+        this.logfile = logfile;
+    }
+    
+    /**
+     * Sets log4J to print to the console and to the logfile if set
+     * 
+     * if running in an applet it does not write to a logfile due to security restrictions
+     */
+    private void initLog4J() {
+        logger.setLevel(Level.INFO);
+        
+        Logger.getRootLogger().addAppender(new ConsoleAppender(new PatternLayout("%-4r [%t] %-5p %c %x - %m%n")));
+        try {
+            if(logfile != null)
+                Logger.getRootLogger().addAppender(new FileAppender(new PatternLayout("%-4r [%t] %-5p %c %x - %m%n"), logfile));
+        } catch (IOException e) {
+            logger.error("Could not write log file", e);
+        } catch (SecurityException e) {
+            logger.debug("Could not create log file. Running in an applet.");
+        }
+    } 
+    
+    /**
+     * Initializes the game
      */
     public void init() {
+        initLog4J();
+        
         logger.debug("init");
         this.setBackground(background);
         this.setCurrentScreen(new PlayScreen());

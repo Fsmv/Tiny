@@ -236,6 +236,9 @@ public class Game implements Runnable {
         this.logfile = logfile;
     }
     
+    /**
+     * @return The component all of the rendering is done onto (add this to your window or applet)
+     */
     public Component getDrawComponent() {
         return canvas;
     }

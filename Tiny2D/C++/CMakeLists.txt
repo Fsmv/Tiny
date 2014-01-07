@@ -11,21 +11,22 @@ set(SOURCES
 )
 
 set(CMAKE_CXX_FLAGS "-std=c++0x")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 
-find_Package(SDL REQUIRED)
-find_Package(SDL_image REQUIRED)
+find_Package(SDL2 REQUIRED)
+find_Package(SDL2_image REQUIRED)
 
 #file(COPY ${CMAKE_SOURCE_DIR}/res DESTINATION ${CMAKE_BINARY_DIR})
 
 link_libraries(
-    ${SDL_LIBRARY}
-    ${SDL_IMAGE_LIBRARY}
+    ${SDL2_LIBRARY}
+    ${SDL2_IMAGE_LIBRARY}
     SDLmain
 )
 
 include_directories(
     ${CMAKE_SOURCE_DIR}/include
-    ${SDL_INCLUDE_DIR}
+    ${SDL2_INCLUDE_DIR}
 )
 
 add_executable (

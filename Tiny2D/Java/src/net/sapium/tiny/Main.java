@@ -11,9 +11,9 @@ public class Main extends Applet {
 
     public static void main(String[] args) {
         game = new Game();
-        game.setCurrentScreen(new PlayScreen());
-        
         game.createWindow();
+        
+        game.setCurrentScreen(new PlayScreen());
         game.start();
     }
 

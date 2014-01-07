@@ -7,6 +7,7 @@ set(TEST_SOURCES
 
 set(SOURCES
     lib/Game.cpp
+    lib/utils/Logger.cpp
 )
 
 set(CMAKE_CXX_FLAGS "-std=c++0x")

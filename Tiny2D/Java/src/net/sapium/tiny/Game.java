@@ -250,10 +250,10 @@ public class Game implements Runnable {
     private void initLog4J() {
         logger.setLevel(Level.INFO);
         
-        Logger.getRootLogger().addAppender(new ConsoleAppender(new PatternLayout("%-4r [%t] %-5p %c %x - %m%n")));
+        Logger.getRootLogger().addAppender(new ConsoleAppender(new PatternLayout("%d %-5p [%c] - %m%n")));
         try {
             if(logfile != null)
-                Logger.getRootLogger().addAppender(new FileAppender(new PatternLayout("%-4r [%t] %-5p %c %x - %m%n"), logfile));
+                Logger.getRootLogger().addAppender(new FileAppender(new PatternLayout("%d %-5p [%c] - %m%n"), logfile));
         } catch (IOException e) {
             logger.error("Could not write log file", e);
         } catch (SecurityException e) {

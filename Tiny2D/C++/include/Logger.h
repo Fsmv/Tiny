@@ -1,4 +1,5 @@
 #pragma once
+#include <stdio.h>
 
 namespace Tiny2D {
 
@@ -63,7 +64,7 @@ private:
     static const char *levelStr[4];
 
     static LogLevel printLevel;
-    static const char *logFile;
+    static FILE *logFile;
 
     const char *name;
 };

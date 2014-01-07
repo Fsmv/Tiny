@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <time.h>
 
 #include "Logger.h"
@@ -9,11 +8,9 @@ const char *Logger::printFormat = "%s %s [%s] - %s\n";
 const char *Logger::timeFormat = "%F %H:%M:%S";
 const char *Logger::levelStr[] = {"ERROR", "WARN", "INFO", "DEBUG"};
 LogLevel Logger::printLevel = INFO;
-const char *Logger::logFile = nullptr;
+FILE *Logger::logFile = nullptr;
 
 void Logger::log(LogLevel level, const char *message) {
-    static bool logfileErr = false;
-
     if(level <= printLevel) {
         time_t currentTime;
         time(&currentTime);
@@ -21,23 +18,24 @@ void Logger::log(LogLevel level, const char *message) {
         strftime(timeStr, 20, Logger::timeFormat, localtime(&currentTime));
 
         printf(Logger::printFormat, timeStr, Logger::levelStr[level], name, message);
-        if(logFile != nullptr) {
-            FILE *file = fopen(logFile, "a");
-            if(file != nullptr) {
-                fprintf(file, Logger::printFormat, timeStr, Logger::levelStr[level], name, message);
-                fclose(file);
-            }else{
-                if(!logfileErr) {
-                    printf(Logger::printFormat, timeStr, Logger::levelStr[WARN], "Logger");
-                    logfileErr = true;
-                }
-            }
+        if(Logger::logFile != nullptr) {
+            fprintf(Logger::logFile, Logger::printFormat, timeStr, Logger::levelStr[level], name, message);
         }
     }
 }
 
 void Logger::setLogFile(const char *file) {
-    Logger::logFile = file;
+    if(Logger::logFile != nullptr) {
+        fclose(Logger::logFile);
+    }
+    
+    //Just keep it open until the process dies or we switch to new file since it's static
+    Logger::logFile = fopen(file, "a");
+    
+    if(Logger::logFile == nullptr) {
+        Logger logger("Logger");
+        logger.warn("Could not open log file");
+    }
 }
 
 void Logger::setLogLevel(LogLevel level) {

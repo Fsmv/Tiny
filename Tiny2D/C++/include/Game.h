@@ -1,6 +1,9 @@
 #pragma once
+
 #include "SDL.h"
 #include "SDL_thread.h"
+
+#include "graphics/Screen.h"
 
 namespace Tiny2D {
 class Game {
@@ -63,6 +66,12 @@ class Game {
          * @param printFps if true print the fps and tps on stdout
          */
         void setPrintFps(bool printFps);
+        /**
+         * Sets the screen to draw and update
+         *
+         * @param screen the screen to set
+         */
+        void setCurrentScreen(Tiny2D::Screen *screen);
     private:
         void tick(unsigned int dt);
         void render();
@@ -83,6 +92,8 @@ class Game {
         bool printFps = true;
         bool running = false;
         unsigned int background = -1;
+        Tiny2D::Screen *currentScreen;
+        Tiny2D::Screen *newScreen
 
         SDL_Thread *thread = nullptr;
         SDL_Window *window = nullptr;

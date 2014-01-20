@@ -14,13 +14,13 @@ Game::~Game() {
 }
 
 void Game::tick(unsigned int dt) {
-    //this->currentScreen.tick(dt);
+    this->currentScreen->tick(dt);
 }
 
 void Game::render() {
-    SDL_FillRect(this->surface, nullptr, SDL_MapRGB(this->surface->format, 0xFF, 0xFF, 0xFF));
+    SDL_FillRect(this->surface, nullptr, this->background);
 
-    //this->currentScreen.draw(this->surface);
+    this->currentScreen->draw(this->surface);
 
     SDL_UpdateWindowSurface(this->window);
 }
@@ -50,6 +50,11 @@ int Game::run(void *data) {
                 msPerFrame = 1000.0/g->fps;
 
             g->changedRates = false;
+        }
+        
+        if(g->newScreen != nullptr) {
+            g->currentScreen = g->newScreen;
+            g->newScreen = nullptr;
         }
 
         unsigned int now = SDL_GetTicks();
@@ -157,4 +162,8 @@ void Game::setBackgroundColor(unsigned int color) {
 
 void Game::setPrintFps(bool printFps) {
     this->printFps = printFps;
+}
+
+void Game::setCurrentScreen(Screen *screen) {
+    this->newScreen = screen;
 }

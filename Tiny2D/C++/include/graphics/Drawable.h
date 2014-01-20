@@ -10,6 +10,6 @@ public:
      *
      * @param surface the surface to draw onto
      */
-    virtual void draw(SDL_Surface surface) = 0;
+    virtual void draw(SDL_Surface *surface) = 0;
 };
 }

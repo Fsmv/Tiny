@@ -69,11 +69,9 @@ int Game::run(void *data) {
     }
 }
 
-void Game::init() {
-    logger.debug("Initializing game");
-}
-
 void Game::start() {
+    createWindow();
+
     logger.debug("Starting game");
     running = true;
     this->thread = SDL_CreateThread(&Game::run, "Game", this);

@@ -1,5 +1,5 @@
 #include "Game.h"
-#include "Logger.h"
+#include "utils/Logger.h"
 
 using namespace Tiny2D;
 

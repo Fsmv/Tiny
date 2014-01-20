@@ -8,14 +8,18 @@ class Game {
         Game(const char *title = "Game", int width = 720, int height = 480);
         ~Game();
         
-        //static because SDL_CreateThreads needs a C function 
-        static int run(void *data);
         void init();
         void start();
         void stop();
         void createWindow();
     
     private:
+        void tick(unsigned int dt);
+        void render();
+        
+        //static because SDL_CreateThreads needs a C function 
+        static int run(void *data);
+        
         const char *title;
         int width;
         int height;

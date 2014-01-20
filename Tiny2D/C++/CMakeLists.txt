@@ -21,7 +21,7 @@ find_Package(SDL2_image REQUIRED)
 link_libraries(
     ${SDL2_LIBRARY}
     ${SDL2_IMAGE_LIBRARY}
-    SDLmain
+    #SDLmain
 )
 
 include_directories(

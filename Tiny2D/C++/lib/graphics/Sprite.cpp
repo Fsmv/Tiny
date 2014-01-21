@@ -1,5 +1,9 @@
 #include "graphics/Sprite.h"
+#include "utils/Logger.h"
 #include "SDL_image.h"
+
+
+using namespace Tiny2D;
 
 Sprite::Sprite(const char *filename) {
     this->image = IMG_Load(filename);

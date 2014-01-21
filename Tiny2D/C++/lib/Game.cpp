@@ -14,13 +14,15 @@ Game::~Game() {
 }
 
 void Game::tick(unsigned int dt) {
-    this->currentScreen->tick(dt);
+    if(this->currentScreen != nullptr)
+        this->currentScreen->tick(dt);
 }
 
 void Game::render() {
     SDL_FillRect(this->surface, nullptr, this->background);
-
-    this->currentScreen->draw(this->surface);
+    
+    if(this->currentScreen != nullptr)
+        this->currentScreen->draw(this->surface);
 
     SDL_UpdateWindowSurface(this->window);
 }
@@ -78,7 +80,7 @@ int Game::run(void *data) {
 
         if(g->printFps && SDL_GetTicks() - lastFpsTime > 1000) {
             //don't use logger for this so we don't clutter the log file
-            printf("%d fps; %d tps", frameCount, tickCount);
+            printf("%d fps; %d tps\n", frameCount, tickCount);
             frameCount = tickCount = 0;
             lastFpsTime = SDL_GetTicks();
         }

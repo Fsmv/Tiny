@@ -8,6 +8,8 @@ set(TEST_SOURCES
 set(SOURCES
     lib/Game.cpp
     lib/utils/Logger.cpp
+    lib/graphics/Sprite.cpp
+    lib/graphics/Screen.cpp
 )
 
 set(CMAKE_CXX_FLAGS "-std=c++0x")

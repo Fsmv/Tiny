@@ -1,24 +1,25 @@
 #pragma once
 
+#include "SDL.h"
 #include "graphics/Drawable.h"
 
 namespace Tiny2D {
-class Screen : Drawable {
+class Screen : public Drawable {
 public:
-    Screen(int width, int height) : width(width), height(height) {}
-    ~Screen();
+    Screen(int width, int height);
+    ~Screen() { SDL_FreeSurface(this->surface); }
 
-    virtual void draw(SDL_Surface *surface);
-    virtual void tick(unsigned int dt);
-    virtual void render();
+    void draw(SDL_Surface *surface);
 
-    void translate(int dx, int dy) {
-        offsetx += dx;
-        offsety += dy;
-    }
+    virtual void tick(unsigned int dt) = 0;
+    virtual void render() = 0;
+
+    void translate(int dx, int dy);
+
+protected:
+    SDL_Surface *surface;
+
 private:
-    int width, height;
-    int offsetx = 0;
-    int offsety = 0;
+    SDL_Rect clipRect, drawRect;
 };
 }

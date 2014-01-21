@@ -93,7 +93,7 @@ class Game {
         bool running = false;
         unsigned int background = -1;
         Tiny2D::Screen *currentScreen;
-        Tiny2D::Screen *newScreen
+        Tiny2D::Screen *newScreen;
 
         SDL_Thread *thread = nullptr;
         SDL_Window *window = nullptr;

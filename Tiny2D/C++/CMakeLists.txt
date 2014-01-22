@@ -10,6 +10,7 @@ set(SOURCES
     lib/utils/Logger.cpp
     lib/graphics/Sprite.cpp
     lib/graphics/Screen.cpp
+    lib/graphics/Animation.cpp
 )
 
 set(CMAKE_CXX_FLAGS "-std=c++0x")

@@ -7,9 +7,17 @@ using namespace Tiny2D;
 Animation::Animation(const char *imagePath, int numFrames, int width, int height) {
     this->spriteSheet = IMG_Load(imagePath);
     this->numFrames = numFrames;
+    
+    if(width > 0)
+        this->frameRect.w = this->drawRect.w = width;
+    else
+        this->frameRect.w = this->drawRect.w = this->spriteSheet->w;
 
-    this->frameRect.w = this->drawRect.w = width;
-    this->frameRect.h = this->drawRect.h = height;
+    if(height > 0)
+        this->frameRect.h = this->drawRect.h = height;
+    else
+        this->frameRect.h = this->drawRect.h = this->spriteSheet->h;
+
     this->frameRect.x = this->frameRect.y = 0;
 }
 

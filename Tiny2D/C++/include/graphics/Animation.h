@@ -3,10 +3,10 @@
 #include "graphics/Drawable.h"
 
 namespace Tiny2D {
-class Animation : public Drawable {
+class Animation : virtual public Drawable {
 public:
-    Animation(const char *imagePath, int numFrames, int width, int height);
-    ~Animation();
+    Animation(const char *imagePath, int numFrames = 1, int width = -1, int height = -1);
+    virtual ~Animation();
 
     void draw(SDL_Surface *surface);
     void draw(SDL_Surface *surface, int x, int y);
@@ -20,12 +20,15 @@ public:
     void setCurrentFrame(int frame);
 
     void setFps(int fps);
+
+protected:
+    int numFrames;
+    int currentFrame;
+
 private:
     SDL_Surface *spriteSheet;
     SDL_Rect frameRect, drawRect;
 
-    int numFrames;
-    int currentFrame;
     double framesToSkip = 0.0;
     int fps = 10;
     bool isPlaying = false;

@@ -11,6 +11,7 @@ set(SOURCES
     lib/graphics/Sprite.cpp
     lib/graphics/Screen.cpp
     lib/graphics/Animation.cpp
+    lib/graphics/Entity.cpp
 )
 
 set(CMAKE_CXX_FLAGS "-std=c++0x")

@@ -4,10 +4,10 @@
 #include "graphics/Drawable.h"
 
 namespace Tiny2D {
-class Sprite : public Tiny2D::Drawable {
+class Sprite : virtual public Tiny2D::Drawable {
 public:
     Sprite(const char *filename);
-    ~Sprite();
+    virtual ~Sprite();
 
     void draw(SDL_Surface *surface);
     void draw(SDL_Surface *surface, int x, int y);

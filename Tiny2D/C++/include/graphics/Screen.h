@@ -4,10 +4,10 @@
 #include "graphics/Drawable.h"
 
 namespace Tiny2D {
-class Screen : public Drawable {
+class Screen : virtual public Drawable {
 public:
     Screen(int width, int height);
-    ~Screen() { SDL_FreeSurface(this->surface); }
+    virtual ~Screen() { SDL_FreeSurface(this->surface); }
 
     void draw(SDL_Surface *surface);
 

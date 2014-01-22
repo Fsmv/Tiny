@@ -5,27 +5,35 @@
 #include "graphics/Screen.h"
 #include "graphics/Sprite.h"
 #include "graphics/Animation.h"
+#include "graphics/Entity.h"
+
+int numFrames[2] = {2, 2};
 
 class TestScreen : public Tiny2D::Screen {
 public:
-    TestScreen() : Tiny2D::Screen(1280, 720), sprite("./icon.png"), anim("./anim.png", 4, 32, 32) { this->translate(-50, -50); anim.play(); }
+    TestScreen() : Tiny2D::Screen(1280, 720), 
+        sprite("./icon.png"), 
+        anim("./anim.png", 4, 32, 32),
+        ent("./anim.png", numFrames, 2, 32, 32) { this->translate(-50, -50); anim.play(); ent.setCurrentAnimation(1); ent.play(); }
 
     void tick(unsigned int dt);
     void render();
-
 private:
     Tiny2D::Sprite sprite;
     Tiny2D::Animation anim;
+    Tiny2D::Entity ent;
 };
 
 void TestScreen::tick(unsigned int dt) {
     this->translate(1, 1);
     anim.tick(dt);
+    ent.tick(dt);
 }
 
 void TestScreen::render() {
     this->sprite.draw(this->surface, 50, 50);
     this->anim.draw(this->surface, 600, 600);
+    this->ent.draw(this->surface);
 }
 
 int main(int argc, char *argv[]) {

@@ -92,8 +92,8 @@ class Game {
         bool printFps = true;
         bool running = false;
         unsigned int background = -1;
-        Tiny2D::Screen *currentScreen;
-        Tiny2D::Screen *newScreen;
+        Tiny2D::Screen *currentScreen = nullptr;
+        Tiny2D::Screen *newScreen = nullptr;
 
         SDL_Thread *thread = nullptr;
         SDL_Window *window = nullptr;

@@ -45,11 +45,14 @@ int Game::run(void *data) {
 
     while(g->running){
         if(g->changedRates) {
-            if(g->limitTps)
+            if(g->limitTps) {
                 msPerTick = 1000.0/g->tps;
-
-            if(g->limitFps)
+                unprocessedTicks = 0.0;
+            }
+            if(g->limitFps) {
                 msPerFrame = 1000.0/g->fps;
+                unrenderedFrames = 0.0;
+            }
 
             g->changedRates = false;
         }

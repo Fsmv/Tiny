@@ -7,20 +7,25 @@ using namespace Tiny2D;
 
 Logger logger("Game");
 
-Game::Game(const char *title, int width, int height) : title(title), width(width), height(height) {
+Game::Game(const char *title, int width, int height) : title(title),
+    width(width), height(height) {
+    ih.setOnQuitCallback(&quit, this);
 }
 
 Game::~Game() {
+    stop();
 }
 
 void Game::tick(unsigned int dt) {
+    ih.processEventQueue();
+
     if(this->currentScreen != nullptr)
         this->currentScreen->tick(dt);
 }
 
 void Game::render() {
     SDL_FillRect(this->surface, nullptr, this->background);
-    
+
     if(this->currentScreen != nullptr)
         this->currentScreen->draw(this->surface);
 
@@ -29,7 +34,7 @@ void Game::render() {
 
 int Game::run(void *data) {
     Game *g = (Game*) data;
-    
+
     double unprocessedTicks = 0.0;
     double msPerTick = 1000.0/g->tps;
 
@@ -43,7 +48,7 @@ int Game::run(void *data) {
     int frameCount = 0;
     int tickCount = 0;
 
-    while(g->running){
+    while(g->running) {
         if(g->changedRates) {
             if(g->limitTps) {
                 msPerTick = 1000.0/g->tps;
@@ -56,7 +61,7 @@ int Game::run(void *data) {
 
             g->changedRates = false;
         }
-        
+
         if(g->newScreen != nullptr) {
             g->currentScreen = g->newScreen;
             g->newScreen = nullptr;
@@ -99,14 +104,20 @@ void Game::start() {
 }
 
 void Game::stop() {
-    logger.debug("Stopping game");
     running = false;
-
-    SDL_WaitThread(this->thread, nullptr);
 
     SDL_DestroyWindow(this->window);
     this->window = nullptr;
     SDL_Quit();
+}
+
+void Game::waitThread() {
+    SDL_WaitThread(this->thread, nullptr);
+}
+
+void Game::quit(void *g) {
+    ((Game *)g)->running = false;
+    logger.debug("Stopping game");
 }
 
 void Game::createWindow() {
@@ -135,7 +146,7 @@ void Game::setIcon(const char *icon) {
 
     if(this->window != nullptr) {
         SDL_Surface *image = IMG_Load(icon);
-        
+
         if(image != nullptr) {
             SDL_SetWindowIcon(this->window, image);
             SDL_FreeSurface(image);
@@ -152,7 +163,7 @@ void Game::setFps(int fps) {
 
 void Game::setTps(int tps) {
     this->tps = tps;
-    
+
     this->limitTps = tps <= 0 ? false : true;
     this->changedRates = true;
 }

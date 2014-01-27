@@ -4,13 +4,14 @@
 #include "SDL_thread.h"
 
 #include "graphics/Screen.h"
+#include "utils/InputHandler.h"
 
 namespace Tiny2D {
 class Game {
     public:
         Game(const char *title = "Game", int width = 720, int height = 480);
         ~Game();
-        
+
         /**
          * Starts running the game
          *
@@ -23,7 +24,8 @@ class Game {
          * Also destroys the window
          */
         void stop();
-    
+        void waitThread();
+
         /**
          * Set the location of the window icon image
          *
@@ -76,10 +78,11 @@ class Game {
         void tick(unsigned int dt);
         void render();
         void createWindow();
-        
+
         //static because SDL_CreateThreads needs a C function 
         static int run(void *data);
-        
+        static void quit(void *g);
+
         const char *title;
         int width;
         int height;
@@ -94,6 +97,7 @@ class Game {
         unsigned int background = -1;
         Tiny2D::Screen *currentScreen = nullptr;
         Tiny2D::Screen *newScreen = nullptr;
+        Tiny2D::InputHandler ih;
 
         SDL_Thread *thread = nullptr;
         SDL_Window *window = nullptr;

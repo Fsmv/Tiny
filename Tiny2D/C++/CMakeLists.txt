@@ -8,6 +8,7 @@ set(TEST_SOURCES
 set(SOURCES
     lib/Game.cpp
     lib/utils/Logger.cpp
+    lib/utils/InputHandler.cpp
     lib/graphics/Sprite.cpp
     lib/graphics/Screen.cpp
     lib/graphics/Animation.cpp

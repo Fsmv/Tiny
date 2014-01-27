@@ -42,6 +42,8 @@ int main(int argc, char *argv[]) {
 
     game.start();
     game.setCurrentScreen(&test);
-    SDL_Delay(10000);
-    game.stop();
+
+    game.waitThread();
+
+    return 0;
 }

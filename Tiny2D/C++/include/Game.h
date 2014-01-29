@@ -9,7 +9,7 @@
 namespace Tiny2D {
 class Game {
     public:
-        Game(const char *title = "Game", int width = 720, int height = 480);
+        Game(Tiny2D::InputHandler *ih, const char *title = "Game", int width = 720, int height = 480);
         ~Game();
 
         /**
@@ -97,7 +97,7 @@ class Game {
         unsigned int background = -1;
         Tiny2D::Screen *currentScreen = nullptr;
         Tiny2D::Screen *newScreen = nullptr;
-        Tiny2D::InputHandler ih;
+        Tiny2D::InputHandler *ih;
 
         SDL_Thread *thread = nullptr;
         SDL_Window *window = nullptr;

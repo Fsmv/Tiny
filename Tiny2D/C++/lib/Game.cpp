@@ -7,9 +7,9 @@ using namespace Tiny2D;
 
 Logger logger("Game");
 
-Game::Game(const char *title, int width, int height) : title(title),
-    width(width), height(height) {
-    ih.setOnQuitCallback(&quit, this);
+Game::Game(InputHandler *ih, const char *title, int width, int height) :
+    ih(ih), title(title), width(width), height(height) {
+    ih->setOnQuitCallback(&quit, this);
 }
 
 Game::~Game() {
@@ -17,7 +17,7 @@ Game::~Game() {
 }
 
 void Game::tick(unsigned int dt) {
-    ih.processEventQueue();
+    ih->processEventQueue();
 
     if(this->currentScreen != nullptr)
         this->currentScreen->tick(dt);

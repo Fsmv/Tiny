@@ -2,7 +2,7 @@
 
 using namespace Tiny2D;
 
-Screen::Screen(int width, int height) {
+Screen::Screen(int width, int height, InputHandler *ih) : ih(ih) {
     unsigned int rmask, bmask, gmask, amask;
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
     rmask = 0xff000000;

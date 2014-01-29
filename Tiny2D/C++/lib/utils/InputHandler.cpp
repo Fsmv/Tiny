@@ -58,10 +58,14 @@ bool InputHandler::isPressed(const char *name) {
     }
 }
 
-void InputHandler::setMouseMoveable(bool letMouseMove) {
+void InputHandler::setRelativeMouseMode(bool enable) {
+    //I could do something with SDL_WarpMouseInWindow to act like it does is the
+    //java version, but I can't think of any reason to keep the mouse visible
+    SDL_SetRelativeMouseMode(enable ? SDL_TRUE : SDL_FALSE);
 }
 
 void InputHandler::setMouseVisible(bool showMouse) {
+    SDL_ShowCursor(showMouse);
 }
 
 void InputHandler::setOnQuitCallback(void (*quit)(void *), void *arg) {

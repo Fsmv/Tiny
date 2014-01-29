@@ -35,6 +35,9 @@ private:
 void TestScreen::tick(unsigned int dt) {
     if(ih->isPressed("drag")) {
         this->translate(-ih->mouse.dx, -ih->mouse.dy);
+        ih->setRelativeMouseMode(true);
+    }else{
+        ih->setRelativeMouseMode(false);
     }
     anim.tick(dt);
     ent.tick(dt);

@@ -31,7 +31,7 @@ public:
 
     bool isPressed(const char *name);
 
-    void setMouseMoveable(bool letMouseMove);
+    void setRelativeMouseMode(bool enable);
     void setMouseVisible(bool showMouse);
 
     void setOnQuitCallback(void (*quit)(void *), void *arg);

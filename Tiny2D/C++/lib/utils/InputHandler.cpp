@@ -1,3 +1,4 @@
+#include <cstring>
 #include "utils/InputHandler.h"
 
 using namespace Tiny2D;
@@ -9,6 +10,8 @@ InputHandler::~InputHandler() {
 }
 
 void InputHandler::processEventQueue() {
+    mouse.x = mouse.y = mouse.dx = mouse.dy = 0;
+
     SDL_Event event;
     while(SDL_PollEvent(&event)) {
         switch(event.type) {
@@ -36,14 +39,14 @@ void InputHandler::processEventQueue() {
     }
 }
 
-void InputHandler::registerAction(const char *name, SDL_Keycode keycode) {
-    ActionState action = actions[name];
+void InputHandler::registerAction(const char *name, const keyCode keycode) {
+    ActionState &action = actions[name];
     action.first = SDL_GetKeyName(keycode);
     action.second = false;
 }
 
-void InputHandler::registerAction(const char *name, unsigned char button) {
-    ActionState action = actions[name];
+void InputHandler::registerAction(const char *name, const mouseButton button) {
+    ActionState &action = actions[name];
     action.first = getMouseButtonName(button);
     action.second = false;
 }
@@ -66,25 +69,23 @@ void InputHandler::setOnQuitCallback(void (*quit)(void *), void *arg) {
     this->quitArg = arg;
 }
 
-void InputHandler::setState(SDL_Keycode &keycode, bool val) {
-    for(ActionList::iterator it = actions.begin();
-            it != actions.end(); ++it) {
-        if(it->second.first == SDL_GetKeyName(keycode)) {
+void InputHandler::setState(const keyCode keycode, bool val) {
+    for(ActionList::iterator it = actions.begin(); it != actions.end(); ++it) {
+        if(it->second.first.compare(SDL_GetKeyName(keycode)) == 0) {
             it->second.second = val;
         }
     }
 }
 
-void InputHandler::setState(unsigned char button, bool val) {
-    for(ActionList::iterator it = actions.begin();
-            it != actions.end(); ++it) {
-        if(it->second.first == getMouseButtonName(button)) {
+void InputHandler::setState(const mouseButton button, bool val) {
+    for(ActionList::iterator it = actions.begin(); it != actions.end(); ++it) {
+        if(it->second.first.compare(getMouseButtonName(button)) == 0) {
             it->second.second = val;
         }
     }
 }
 
-const char *InputHandler::getMouseButtonName(unsigned char button) {
+const char *InputHandler::getMouseButtonName(const mouseButton button) {
     switch(button) {
     case SDL_BUTTON_LEFT:
         return MOUSE_ONE_NAME;

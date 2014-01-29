@@ -6,15 +6,23 @@
 #include "graphics/Sprite.h"
 #include "graphics/Animation.h"
 #include "graphics/Entity.h"
+#include "utils/InputHandler.h"
 
 int numFrames[2] = {2, 2};
 
 class TestScreen : public Tiny2D::Screen {
 public:
-    TestScreen() : Tiny2D::Screen(1280, 720), 
+    TestScreen(Tiny2D::InputHandler *ih) : Tiny2D::Screen(1280, 720, ih), 
         sprite("./icon.png"), 
         anim("./anim.png", 4, 32, 32),
-        ent("./anim.png", numFrames, 2, 32, 32) { this->translate(-50, -50); anim.play(); ent.setCurrentAnimation(1); ent.play(); }
+        ent("./anim.png", numFrames, 2, 32, 32) { 
+            this->translate(-50, -50);
+            anim.play();
+            ent.setCurrentAnimation(1);
+            ent.play();
+
+            ih->registerAction("drag", SDL_BUTTON_LEFT);
+        }
 
     void tick(unsigned int dt);
     void render();
@@ -25,7 +33,9 @@ private:
 };
 
 void TestScreen::tick(unsigned int dt) {
-    this->translate(1, 1);
+    if(ih->isPressed("drag")) {
+        this->translate(-ih->mouse.dx, -ih->mouse.dy);
+    }
     anim.tick(dt);
     ent.tick(dt);
 }
@@ -37,8 +47,9 @@ void TestScreen::render() {
 }
 
 int main(int argc, char *argv[]) {
-    Tiny2D::Game game;
-    TestScreen test;
+    Tiny2D::InputHandler ih;
+    Tiny2D::Game game(&ih);
+    TestScreen test(&ih);
 
     game.start();
     game.setCurrentScreen(&test);

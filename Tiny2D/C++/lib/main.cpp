@@ -12,25 +12,29 @@ int numFrames[2] = {2, 2};
 
 class TestScreen : public Tiny2D::Screen {
 public:
-    TestScreen(Tiny2D::InputHandler *ih) : Tiny2D::Screen(1280, 720, ih), 
-        sprite("./icon.png"), 
-        anim("./anim.png", 4, 32, 32),
-        ent("./anim.png", numFrames, 2, 32, 32) { 
-            this->translate(-50, -50);
-            anim.play();
-            ent.setCurrentAnimation(1);
-            ent.play();
+    TestScreen(Tiny2D::InputHandler *ih) : Tiny2D::Screen(1280, 720, ih) {
+        this->translate(-50, -50);
+        ih->registerAction("drag", SDL_BUTTON_LEFT);
+    }
 
-            ih->registerAction("drag", SDL_BUTTON_LEFT);
-        }
-
+    void load(SDL_Renderer *renderer);
     void tick(unsigned int dt);
-    void render();
+    void render(SDL_Renderer *renderer);
 private:
     Tiny2D::Sprite sprite;
     Tiny2D::Animation anim;
     Tiny2D::Entity ent;
 };
+
+void TestScreen::load(SDL_Renderer *renderer) {
+    sprite.load(renderer, "./icon.png");
+    anim.load(renderer, "./anim.png", 4, 32, 32);
+    ent.load(renderer, "./anim.png", numFrames, 2, 32, 32);
+
+    anim.play();
+    ent.setCurrentAnimation(1);
+    ent.play();
+}
 
 void TestScreen::tick(unsigned int dt) {
     if(ih->isPressed("drag")) {
@@ -43,10 +47,10 @@ void TestScreen::tick(unsigned int dt) {
     ent.tick(dt);
 }
 
-void TestScreen::render() {
-    this->sprite.draw(this->surface, 50, 50);
-    this->anim.draw(this->surface, 600, 600);
-    this->ent.draw(this->surface);
+void TestScreen::render(SDL_Renderer *renderer) {
+    this->sprite.draw(renderer, 50, 50);
+    this->anim.draw(renderer, 600, 600);
+    this->ent.draw(renderer);
 }
 
 int main(int argc, char *argv[]) {

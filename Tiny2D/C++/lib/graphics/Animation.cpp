@@ -1,39 +1,55 @@
 #include <math.h>
 #include "SDL_image.h"
 #include "graphics/Animation.h"
+#include "utils/Logger.h"
 
 using namespace Tiny2D;
 
-Animation::Animation(const char *imagePath, int numFrames, int width, int height) {
-    this->spriteSheet = IMG_Load(imagePath);
+Animation::Animation(SDL_Renderer *renderer, const char *imagePath,
+        int numFrames, int width, int height) {
+    load(renderer, imagePath, numFrames, width, height);
+}
+
+Animation::~Animation() {
+    SDL_DestroyTexture(this->spriteSheet);
+}
+
+void Animation::load(SDL_Renderer *renderer, const char *imagePath,
+        int numFrames, int width, int height) {
+    SDL_Surface *temp = IMG_Load(imagePath);
+    this->spriteSheet = SDL_CreateTextureFromSurface(renderer, temp);
+
+    if(!this->spriteSheet) {
+        Logger logger("Animation");
+        logger.error("Could not load sprit sheet");
+    }
+
     this->numFrames = numFrames;
-    
+
     if(width > 0)
         this->frameRect.w = this->drawRect.w = width;
     else
-        this->frameRect.w = this->drawRect.w = this->spriteSheet->w;
+        this->frameRect.w = this->drawRect.w = temp->w;
 
     if(height > 0)
         this->frameRect.h = this->drawRect.h = height;
     else
-        this->frameRect.h = this->drawRect.h = this->spriteSheet->h;
+        this->frameRect.h = this->drawRect.h = temp->h;
 
     this->frameRect.x = this->frameRect.y = 0;
+    SDL_FreeSurface(temp);
+
 }
 
-Animation::~Animation() {
-    SDL_FreeSurface(this->spriteSheet);
+void Animation::draw(SDL_Renderer *renderer) {
+    draw(renderer, 0, 0);
 }
 
-void Animation::draw(SDL_Surface *surface) {
-    draw(surface, 0, 0);
-}
-
-void Animation::draw(SDL_Surface *surface, int x, int y) {
+void Animation::draw(SDL_Renderer *renderer, int x, int y) {
     drawRect.x = x;
     drawRect.y = y;
 
-    SDL_BlitSurface(this->spriteSheet, &frameRect, surface, &drawRect);
+    SDL_RenderCopy(renderer, this->spriteSheet, &frameRect, &drawRect);
 }
 
 void Animation::tick(unsigned int dt) {
@@ -65,8 +81,10 @@ void Animation::nextFrame() {
 
 void Animation::setCurrentFrame(int frame) {
     this->currentFrame = frame % this->numFrames;
-    frameRect.x =  (currentFrame * frameRect.w) % spriteSheet->w;
-    frameRect.y = ((currentFrame * frameRect.w) / spriteSheet->w) * frameRect.h;
+    int w;
+    SDL_QueryTexture(this->spriteSheet, nullptr, nullptr, &w, nullptr);
+    frameRect.x =  (currentFrame * frameRect.w) % w;
+    frameRect.y = ((currentFrame * frameRect.w) / w) * frameRect.h;
 }
 
 void Animation::setFps(int fps) {

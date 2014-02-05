@@ -8,17 +8,19 @@ namespace Tiny2D {
 class Screen : virtual public Drawable {
 public:
     Screen(int width, int height, Tiny2D::InputHandler *ih);
-    virtual ~Screen() { SDL_FreeSurface(this->surface); }
+    virtual ~Screen() { SDL_DestroyTexture(this->texture); }
 
-    void draw(SDL_Surface *surface);
+    virtual void load(SDL_Renderer *renderer) {}
+    void init(SDL_Renderer *renderer);
+    void draw(SDL_Renderer *renderer);
 
     virtual void tick(unsigned int dt) = 0;
-    virtual void render() = 0;
+    virtual void render(SDL_Renderer *renderer) = 0;
 
     void translate(int dx, int dy);
 
 protected:
-    SDL_Surface *surface;
+    SDL_Texture *texture = nullptr;
     Tiny2D::InputHandler *ih;
 
 private:

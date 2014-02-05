@@ -9,12 +9,13 @@
 namespace Tiny2D {
 class Entity : private Tiny2D::Animation, virtual public Tiny2D::Drawable {
 public:
+    Entity() {};
     /**
      * Creates an entity with no animation
      *
      * @param filename the path to the entity image
      */
-    Entity(const char *filename) : Tiny2D::Animation(filename) {}
+    Entity(SDL_Renderer *renderer, const char *filename);
     /**
      * Creates an entity from a sprite sheet with multiple animations
      * 
@@ -24,16 +25,20 @@ public:
      * @param width the width of one frame (all frames must have the same size)
      * @param height the height of one frame (all frames must have the same size)
      */
-    Entity(const char *filename, int numFrames[], size_t numAnimations, int width, int heigth);
+    Entity(SDL_Renderer *renderer, const char *filename, int numFrames[],
+            size_t numAnimations, int width, int heigth);
     virtual ~Entity() {};
 
-    void draw(SDL_Surface *surface);
+    using Tiny2D::Animation::load;
+    void load(SDL_Renderer *renderer, const char *filename, int numFrames[],
+            size_t numAnimations, int width, int height);
+    void draw(SDL_Renderer *renderer);
     void tick(unsigned int dt);
 
     using Tiny2D::Animation::play;
     using Tiny2D::Animation::pause;
     void restart();
-    
+
     void setCurrentAnimation(int animation);
     void setCurrentFrame(int frame);
     void nextFrame();

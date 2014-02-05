@@ -24,16 +24,17 @@ void Game::tick(unsigned int dt) {
 }
 
 void Game::render() {
-    SDL_FillRect(this->surface, nullptr, this->background);
+    SDL_RenderClear(renderer);
 
     if(this->currentScreen != nullptr)
-        this->currentScreen->draw(this->surface);
+        this->currentScreen->draw(this->renderer);
 
-    SDL_UpdateWindowSurface(this->window);
+    SDL_RenderPresent(renderer);
 }
 
 int Game::run(void *data) {
     Game *g = (Game*) data;
+    g->createWindow();
 
     double unprocessedTicks = 0.0;
     double msPerTick = 1000.0/g->tps;
@@ -65,6 +66,8 @@ int Game::run(void *data) {
         if(g->newScreen != nullptr) {
             g->currentScreen = g->newScreen;
             g->newScreen = nullptr;
+
+            g->currentScreen->load(g->renderer);
         }
 
         unsigned int now = SDL_GetTicks();
@@ -96,8 +99,6 @@ int Game::run(void *data) {
 }
 
 void Game::start() {
-    createWindow();
-
     logger.debug("Starting game");
     running = true;
     this->thread = SDL_CreateThread(&Game::run, "Game", this);
@@ -134,8 +135,13 @@ void Game::createWindow() {
         }else{
             this->setIcon(this->icon);
 
-            this->surface = SDL_GetWindowSurface(this->window);
-
+            //TODO: Add option to select graphics card?
+            //TODO: Also support vsync options
+            renderer = SDL_CreateRenderer(window, -1, 0);
+            if(renderer == nullptr) {
+                logger.error("SDL could not create a renderer");
+                logger.error(SDL_GetError());
+            }
             this->setBackgroundColor(this->background);
         }
     }
@@ -169,11 +175,11 @@ void Game::setTps(int tps) {
 }
 
 void Game::setBackgroundColor(unsigned int color) {
-    if(this->surface == nullptr) {
-        this->background = color;
-    }else{
-        this->background = SDL_MapRGB(this->surface->format, (color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF);
-    }
+    SDL_SetRenderDrawColor(renderer,
+            color & 0xFF,               //Red
+            (color >> 8) & 0xFF,        //Green
+            (color >> 16) & 0xFF,       //Blue
+            (color >> 24) & 0xFF);      //Alpha
 }
 
 void Game::setPrintFps(bool printFps) {

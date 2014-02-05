@@ -5,27 +5,38 @@
 
 using namespace Tiny2D;
 
-Sprite::Sprite(const char *filename) {
-    this->image = IMG_Load(filename);
+Sprite::Sprite(SDL_Renderer *renderer, const char *filename) {
+    load(renderer, filename);
+}
+
+Sprite::~Sprite() {
+    if(this->image != nullptr) {
+        SDL_DestroyTexture(this->image);
+    }
+}
+
+void Sprite::load(SDL_Renderer *renderer, const char *filename) {
+    this->~Sprite();
+
+    SDL_Surface *temp = IMG_Load(filename);
+    this->image = SDL_CreateTextureFromSurface(renderer, temp);
+
     if(!this->image) {
         Logger logger("Sprite");
         logger.error("Failed to load image");
     }
 
-    this->drawRect.w = this->image->w;
-    this->drawRect.h = this->image->h;
+    this->drawRect.w = temp->w;
+    this->drawRect.h = temp->h;
+    SDL_FreeSurface(temp);
 }
 
-Sprite::~Sprite() {
-    SDL_FreeSurface(this->image);
+void Sprite::draw(SDL_Renderer *renderer) {
+    draw(renderer, 0, 0);
 }
 
-void Sprite::draw(SDL_Surface *surface) {
-    draw(surface, 0, 0);
-}
-
-void Sprite::draw(SDL_Surface *surface, int x, int y) {
+void Sprite::draw(SDL_Renderer *renderer, int x, int y) {
     this->drawRect.x = x;
     this->drawRect.y = y;
-    SDL_BlitSurface(this->image, nullptr, surface, &drawRect);
+    SDL_RenderCopy(renderer, this->image, nullptr, &this->drawRect);
 }

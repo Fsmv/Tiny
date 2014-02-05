@@ -2,23 +2,36 @@
 
 using namespace Tiny2D;
 
-Entity::Entity(const char *filename, int numFrames[], size_t numAnimations, int width, int height) :
-    Animation(filename, 0, width, height), numFramesArr(numFrames), numAnimations(numAnimations) {
-    
-    //I can't do this sum in the initializer list
+Entity::Entity(SDL_Renderer *renderer, const char *filename) {
+    load(renderer, filename);
+}
+
+Entity::Entity(SDL_Renderer *renderer, const char *filename, int numFrames[],
+        size_t numAnimations, int width, int height) {
+    load(renderer, filename, numFrames, numAnimations, width, height);
+}
+
+void Entity::load(SDL_Renderer *renderer, const char *filename, int numFrames[],
+        size_t numAnimations, int width, int height) {
+    this->load(renderer, filename, 0, width, height);
+
+    this->numFramesArr = numFrames;
+    this->numAnimations = numAnimations;
+
     for(int i = 0; i < numAnimations; i++) {
         this->numFrames += numFramesArr[i];
     }
 }
 
-void Entity::draw(SDL_Surface *surface) {
-    Animation::draw(surface, this->x, this->y);
+
+void Entity::draw(SDL_Renderer *renderer) {
+    Animation::draw(renderer, this->x, this->y);
 }
 
 void Entity::tick(unsigned int dt) {
     this->x += this->dx * dt/1000.0;
     this->y += this->dy * dt/1000.0;
-    
+
     Animation::tick(dt);
 
     this->setCurrentFrame(((currentFrame - currentStartFrame) % numFramesArr[currentAnimation]) + currentStartFrame);

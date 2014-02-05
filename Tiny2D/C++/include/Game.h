@@ -55,9 +55,9 @@ class Game {
         /**
          * Sets the color to use when clearing the screen
          *
-         * default: 0x00FFFFFF
+         * default: 0xFFFFFFFF
          *
-         * @param color the color to set to (in the format 0x00RRGGBB)
+         * @param color the color to set to (in the format 0xAARRGGBB)
          */
         void setBackgroundColor(unsigned int color);
         /**
@@ -94,13 +94,13 @@ class Game {
         bool limitTps = true;
         bool printFps = true;
         bool running = false;
-        unsigned int background = -1;
+        unsigned int background = 0xFFFFFFFF;
         Tiny2D::Screen *currentScreen = nullptr;
         Tiny2D::Screen *newScreen = nullptr;
         Tiny2D::InputHandler *ih;
 
         SDL_Thread *thread = nullptr;
         SDL_Window *window = nullptr;
-        SDL_Surface *surface = nullptr;
+        SDL_Renderer *renderer = nullptr;
 };
 }

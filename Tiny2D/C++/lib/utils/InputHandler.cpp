@@ -25,16 +25,16 @@ void InputHandler::processEventQueue() {
             this->quit(this->quitArg);
             break;
         case SDL_KEYDOWN:
-            setState(event.key.keysym.sym, true);
+            setState(SDL_GetKeyName(event.key.keysym.sym), true);
             break;
         case SDL_KEYUP:
-            setState(event.key.keysym.sym, false);
+            setState(SDL_GetKeyName(event.key.keysym.sym), false);
             break;
         case SDL_MOUSEBUTTONDOWN:
-            setState(event.button.button, true);
+            setState(getMouseButtonName(event.button.button), true);
             break;
         case SDL_MOUSEBUTTONUP:
-            setState(event.button.button, false);
+            setState(getMouseButtonName(event.button.button), false);
             break;
         case SDL_MOUSEMOTION:
             onMouseMotion(&event.motion);
@@ -46,16 +46,20 @@ void InputHandler::processEventQueue() {
 }
 
 void InputHandler::registerAction(const char *name, const char *keyname) {
-    ActionState &action = actions[name];
+    ActionState action;
     action.first = keyname;
     action.second = false;
+    actions.insert(std::pair<std::string, ActionState>(name, action));
 }
 
 bool InputHandler::isPressed(const char *name) {
-    ActionList::iterator pressed = actions.find(name);
-    if(pressed != actions.end()) {
-        return pressed->second.second;
+    bool result = false;
+    for(ActionList::iterator pressed = actions.find(name);
+            pressed != actions.end(); pressed++) {
+        result |= pressed->second.second;
     }
+
+    return result;
 }
 
 void InputHandler::setRelativeMouseMode(bool enable) {
@@ -73,23 +77,15 @@ void InputHandler::setOnQuitCallback(void (*quit)(void *), void *arg) {
     this->quitArg = arg;
 }
 
-void InputHandler::setState(const keyCode keycode, bool val) {
+void InputHandler::setState(const char *name, bool val) {
     for(ActionList::iterator it = actions.begin(); it != actions.end(); ++it) {
-        if(it->second.first.compare(SDL_GetKeyName(keycode)) == 0) {
+        if(it->second.first.compare(name) == 0) {
             it->second.second = val;
         }
     }
 }
 
-void InputHandler::setState(const mouseButton button, bool val) {
-    for(ActionList::iterator it = actions.begin(); it != actions.end(); ++it) {
-        if(it->second.first.compare(getMouseButtonName(button)) == 0) {
-            it->second.second = val;
-        }
-    }
-}
-
-const char *InputHandler::getMouseButtonName(const mouseButton button) {
+const char *InputHandler::getMouseButtonName(const int button) {
     switch(button) {
     case SDL_BUTTON_LEFT:
         return MOUSE_ONE;

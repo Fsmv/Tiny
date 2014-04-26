@@ -4,11 +4,6 @@
 #include <string>
 #include "SDL.h"
 
-//Work around for the SDLK enum being anonymous
-typedef decltype(SDLK_0) keyCode;
-//These are #defined as integer literals
-typedef int mouseButton;
-
 namespace Tiny2D {
 class InputHandler {
 public:
@@ -31,7 +26,7 @@ public:
     void setMouseVisible(bool showMouse);
 
     void setOnQuitCallback(void (*quit)(void *), void *arg);
-    const char *getMouseButtonName(const mouseButton button);
+    static const char *getMouseButtonName(int button);
 
     struct {
         int x = 0;
@@ -46,13 +41,12 @@ public:
     static const char *MOUSE_FOUR;
     static const char *MOUSE_FIVE;
 private:
-    void setState(const keyCode keycode, bool val);
-    void setState(const mouseButton button, bool val);
+    void setState(const char *name, bool val);
 
     inline void onMouseMotion(SDL_MouseMotionEvent *event);
 
     typedef std::pair<std::string, bool> ActionState;
-    typedef std::map<std::string, ActionState> ActionList;
+    typedef std::multimap<std::string, ActionState> ActionList;
 
     ActionList actions;
 

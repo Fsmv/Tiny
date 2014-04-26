@@ -13,6 +13,7 @@ set(SOURCES
     lib/graphics/Screen.cpp
     lib/graphics/Animation.cpp
     lib/graphics/Entity.cpp
+    lib/graphics/Text.cpp
 )
 
 set(CMAKE_CXX_FLAGS "-std=c++0x")
@@ -20,12 +21,14 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 
 find_Package(SDL2 REQUIRED)
 find_Package(SDL2_image REQUIRED)
+find_Package(SDL2_ttf REQUIRED)
 
-#file(COPY ${CMAKE_SOURCE_DIR}/res DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY ${CMAKE_SOURCE_DIR}/res DESTINATION ${CMAKE_BINARY_DIR})
 
 link_libraries(
     ${SDL2_LIBRARY}
     ${SDL2_IMAGE_LIBRARY}
+    ${SDL2_TTF_LIBRARY}
     #SDLmain
 )
 

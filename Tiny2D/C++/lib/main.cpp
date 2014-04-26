@@ -6,6 +6,7 @@
 #include "graphics/Sprite.h"
 #include "graphics/Animation.h"
 #include "graphics/Entity.h"
+#include "graphics/Text.h"
 #include "utils/InputHandler.h"
 
 int numFrames[2] = {2, 2};
@@ -24,12 +25,14 @@ private:
     Tiny2D::Sprite sprite;
     Tiny2D::Animation anim;
     Tiny2D::Entity ent;
+    Tiny2D::Text text;
 };
 
 void TestScreen::load(SDL_Renderer *renderer) {
     sprite.load(renderer, "./icon.png");
     anim.load(renderer, "./anim.png", 4, 32, 32);
     ent.load(renderer, "./anim.png", numFrames, 2, 32, 32);
+    text.load(renderer, "Hello World", "./res/OpenSans-Regular.ttf", 12);
 
     anim.play();
     ent.setCurrentAnimation(1);
@@ -51,6 +54,7 @@ void TestScreen::render(SDL_Renderer *renderer) {
     this->sprite.draw(renderer, 50, 50);
     this->anim.draw(renderer, 600, 600);
     this->ent.draw(renderer);
+    this->text.draw(renderer);
 }
 
 int main(int argc, char *argv[]) {

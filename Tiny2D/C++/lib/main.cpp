@@ -16,6 +16,7 @@ public:
     TestScreen(Tiny2D::InputHandler *ih) : Tiny2D::Screen(1280, 720, ih) {
         this->translate(-50, -50);
         ih->registerAction("drag", SDL_BUTTON_LEFT);
+        ih->registerAction("up", SDLK_w);
     }
 
     void load(SDL_Renderer *renderer);

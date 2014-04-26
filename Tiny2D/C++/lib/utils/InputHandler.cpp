@@ -3,6 +3,12 @@
 
 using namespace Tiny2D;
 
+const char *InputHandler::MOUSE_ONE = "Mouse 1";
+const char *InputHandler::MOUSE_TWO = "Mouse 2";
+const char *InputHandler::MOUSE_THREE = "Mouse 3";
+const char *InputHandler::MOUSE_FOUR = "Mouse 4";
+const char *InputHandler::MOUSE_FIVE = "Mouse 5";
+
 InputHandler::InputHandler() {
 }
 
@@ -39,15 +45,9 @@ void InputHandler::processEventQueue() {
     }
 }
 
-void InputHandler::registerAction(const char *name, const keyCode keycode) {
+void InputHandler::registerAction(const char *name, const char *keyname) {
     ActionState &action = actions[name];
-    action.first = SDL_GetKeyName(keycode);
-    action.second = false;
-}
-
-void InputHandler::registerAction(const char *name, const mouseButton button) {
-    ActionState &action = actions[name];
-    action.first = getMouseButtonName(button);
+    action.first = keyname;
     action.second = false;
 }
 
@@ -92,15 +92,15 @@ void InputHandler::setState(const mouseButton button, bool val) {
 const char *InputHandler::getMouseButtonName(const mouseButton button) {
     switch(button) {
     case SDL_BUTTON_LEFT:
-        return MOUSE_ONE_NAME;
+        return MOUSE_ONE;
     case SDL_BUTTON_RIGHT:
-        return MOUSE_TWO_NAME;
+        return MOUSE_TWO;
     case SDL_BUTTON_MIDDLE:
-        return MOUSE_THREE_NAME;
+        return MOUSE_THREE;
     case SDL_BUTTON_X1:
-        return MOUSE_FOUR_NAME;
+        return MOUSE_FOUR;
     case SDL_BUTTON_X2:
-        return MOUSE_FIVE_NAME;
+        return MOUSE_FIVE;
     default:
         return "not named";
     }

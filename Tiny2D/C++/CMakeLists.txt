@@ -16,7 +16,7 @@ set(SOURCES
     lib/graphics/Text.cpp
 )
 
-set(CMAKE_CXX_FLAGS "-std=c++0x")
+set(CMAKE_CXX_FLAGS "-std=c++11")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 
 find_Package(SDL2 REQUIRED)

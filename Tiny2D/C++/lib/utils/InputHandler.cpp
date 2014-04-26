@@ -54,8 +54,8 @@ void InputHandler::registerAction(const char *name, const char *keyname) {
 
 bool InputHandler::isPressed(const char *name) {
     bool result = false;
-    for(ActionList::iterator pressed = actions.find(name);
-            pressed != actions.end(); pressed++) {
+    for(ActionList::iterator pressed = actions.lower_bound(name);
+            pressed != actions.upper_bound(name); pressed++) {
         result |= pressed->second.second;
     }
 

@@ -15,8 +15,9 @@ class TestScreen : public Tiny2D::Screen {
 public:
     TestScreen(Tiny2D::InputHandler *ih) : Tiny2D::Screen(1280, 720, ih) {
         this->translate(-50, -50);
-        ih->registerAction("drag", SDL_BUTTON_LEFT);
+        ih->registerAction("drag", Tiny2D::InputHandler::MOUSE_ONE);
         ih->registerAction("up", SDLK_w);
+        ih->registerAction("up", SDLK_UP);
     }
 
     void load(SDL_Renderer *renderer);
@@ -47,15 +48,19 @@ void TestScreen::tick(unsigned int dt) {
     }else{
         ih->setRelativeMouseMode(false);
     }
+
+    if(ih->isPressed("up")) {
+        this->translate(0, 10);
+    }
     anim.tick(dt);
     ent.tick(dt);
 }
 
 void TestScreen::render(SDL_Renderer *renderer) {
     this->sprite.draw(renderer, 50, 50);
-    this->anim.draw(renderer, 600, 600);
+    //this->anim.draw(renderer, 600, 600);
     this->ent.draw(renderer);
-    this->text.draw(renderer);
+    //this->text.draw(renderer);
 }
 
 int main(int argc, char *argv[]) {

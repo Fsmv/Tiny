@@ -33,7 +33,7 @@ public class Game implements Runnable {
     private boolean limitFPS = true;
     private boolean limitTPS = true;
 
-    private String icon = "/icon.png";
+    private String icon = "";
     private String logfile = "output.log";
     
     private Canvas canvas;
@@ -293,9 +293,9 @@ public class Game implements Runnable {
         this.init();
         window.add(canvas);
         
-        if(icon != null) {
+        if(icon != null && icon != "") {
             try {
-                window.setIconImage(ImageIO.read(Main.class.getResourceAsStream(icon)));
+                window.setIconImage(ImageIO.read(Game.class.getResourceAsStream(icon)));
             } catch (IOException e) {
                 logger.error("Could not load icon image", e);
             }

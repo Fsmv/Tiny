@@ -1,14 +1,15 @@
 #pragma once
 #include "SDL.h"
 #include "graphics/Drawable.h"
+#include "graphics/Sprite.h"
 
 namespace Tiny2D {
-class Animation : virtual public Drawable {
+class Animation : private Sprite, virtual public Drawable {
 public:
     Animation() {};
     Animation(SDL_Renderer *renderer, const char *imagePath, int numFrames = 1,
             int width = -1, int height = -1);
-    virtual ~Animation();
+    virtual ~Animation() {};
 
     void load(SDL_Renderer *renderer, const char *imagePath, int numFrames = 1,
             int width = -1, int height = -1);
@@ -30,8 +31,7 @@ protected:
     int currentFrame;
 
 private:
-    SDL_Texture *spriteSheet;
-    SDL_Rect frameRect, drawRect;
+    SDL_Rect frameRect;
 
     double framesToSkip = 0.0;
     int fps = 10;

@@ -10,14 +10,14 @@ public:
     Sprite(SDL_Renderer *renderer, const char *filename);
     virtual ~Sprite();
 
-    void load(SDL_Renderer *renderer, const char *filename);
-    void draw(SDL_Renderer *renderer);
-    void draw(SDL_Renderer *renderer, int x, int y);
+    virtual void load(SDL_Renderer *renderer, const char *filename);
+    virtual void draw(SDL_Renderer *renderer);
+    virtual void draw(SDL_Renderer *renderer, int x, int y);
     int getWidth();
     int getHeight();
 
-private:
-    SDL_Texture *image;
+protected:
+    SDL_Texture *image = nullptr;
     SDL_Rect drawRect;
 };
 }

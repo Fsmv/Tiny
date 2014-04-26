@@ -10,46 +10,34 @@ Animation::Animation(SDL_Renderer *renderer, const char *imagePath,
     load(renderer, imagePath, numFrames, width, height);
 }
 
-Animation::~Animation() {
-    SDL_DestroyTexture(this->spriteSheet);
-}
-
 void Animation::load(SDL_Renderer *renderer, const char *imagePath,
         int numFrames, int width, int height) {
-    SDL_Surface *temp = IMG_Load(imagePath);
-    this->spriteSheet = SDL_CreateTextureFromSurface(renderer, temp);
-
-    if(!this->spriteSheet) {
-        Logger logger("Animation");
-        logger.error("Could not load sprit sheet");
-    }
+    Sprite::load(renderer, imagePath);
 
     this->numFrames = numFrames;
+
+    int w, h;
+    SDL_QueryTexture(this->image, nullptr, nullptr, &w, &h);
 
     if(width > 0)
         this->frameRect.w = this->drawRect.w = width;
     else
-        this->frameRect.w = this->drawRect.w = temp->w;
+        this->frameRect.w = this->drawRect.w = w;
 
     if(height > 0)
         this->frameRect.h = this->drawRect.h = height;
     else
-        this->frameRect.h = this->drawRect.h = temp->h;
+        this->frameRect.h = this->drawRect.h = h;
 
     this->frameRect.x = this->frameRect.y = 0;
-    SDL_FreeSurface(temp);
-
 }
 
 void Animation::draw(SDL_Renderer *renderer) {
-    draw(renderer, 0, 0);
+    this->draw(renderer, 0, 0);
 }
 
 void Animation::draw(SDL_Renderer *renderer, int x, int y) {
-    drawRect.x = x;
-    drawRect.y = y;
-
-    SDL_RenderCopy(renderer, this->spriteSheet, &frameRect, &drawRect);
+    SDL_RenderCopy(renderer, this->image, &frameRect, &drawRect);
 }
 
 void Animation::tick(unsigned int dt) {
@@ -82,7 +70,7 @@ void Animation::nextFrame() {
 void Animation::setCurrentFrame(int frame) {
     this->currentFrame = frame % this->numFrames;
     int w;
-    SDL_QueryTexture(this->spriteSheet, nullptr, nullptr, &w, nullptr);
+    SDL_QueryTexture(this->image, nullptr, nullptr, &w, nullptr);
     frameRect.x =  (currentFrame * frameRect.w) % w;
     frameRect.y = ((currentFrame * frameRect.w) / w) * frameRect.h;
 }

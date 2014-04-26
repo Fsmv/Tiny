@@ -46,6 +46,11 @@ public:
     inline void setPos(double x, double y) { this->x = x; this->y = y; }
     inline void setVel(double dx, double dy) { this->dx = dx; this->dy = dy; }
 
+    inline double getX() { return x; };
+    inline double getY() { return y; };
+    inline double getdX() { return dx; };
+    inline double getdY() { return dy; };
+
     using Tiny2D::Animation::setFps;
 private:
     double x = 0.0, y = 0.0;

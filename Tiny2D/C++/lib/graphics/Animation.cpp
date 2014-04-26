@@ -37,6 +37,8 @@ void Animation::draw(SDL_Renderer *renderer) {
 }
 
 void Animation::draw(SDL_Renderer *renderer, int x, int y) {
+    drawRect.x = x;
+    drawRect.y = y;
     SDL_RenderCopy(renderer, this->image, &frameRect, &drawRect);
 }
 
